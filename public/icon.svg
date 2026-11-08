@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" rx="112" fill="#171717"/>
+  <!-- 달력 -->
+  <rect x="116" y="132" width="280" height="256" rx="36" fill="none" stroke="#ffffff" stroke-width="22"/>
+  <line x1="116" y1="200" x2="396" y2="200" stroke="#ffffff" stroke-width="22"/>
+  <line x1="190" y1="104" x2="190" y2="156" stroke="#ffffff" stroke-width="22" stroke-linecap="round"/>
+  <line x1="322" y1="104" x2="322" y2="156" stroke="#ffffff" stroke-width="22" stroke-linecap="round"/>
+  <!-- 히트맵 칸 -->
+  <rect x="152" y="232" width="56" height="56" rx="10" fill="#b7d3f6"/>
+  <rect x="228" y="232" width="56" height="56" rx="10" fill="#6da7ec"/>
+  <rect x="304" y="232" width="56" height="56" rx="10" fill="#2a78d6"/>
+  <rect x="152" y="304" width="56" height="56" rx="10" fill="#6da7ec"/>
+  <rect x="228" y="304" width="56" height="56" rx="10" fill="#2a78d6"/>
+  <rect x="304" y="304" width="56" height="56" rx="10" fill="#b7d3f6"/>
+</svg>

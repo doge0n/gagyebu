@@ -1,0 +1,41 @@
+@import 'tailwindcss';
+
+/* html.dark 클래스로 다크모드 전환 (설정의 시스템/라이트/다크) */
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --font-sans: -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', Pretendard, 'Malgun Gothic', 'Noto Sans KR',
+    system-ui, sans-serif;
+}
+
+@layer base {
+  html {
+    -webkit-tap-highlight-color: transparent;
+    color-scheme: light;
+  }
+  html.dark {
+    color-scheme: dark;
+  }
+  body {
+    @apply bg-neutral-50 text-neutral-900 antialiased dark:bg-neutral-950 dark:text-neutral-100;
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+/* 카테고리 색: style={catVars(color)} 와 함께 사용 */
+.cat-bg {
+  background-color: var(--c);
+}
+.dark .cat-bg {
+  background-color: var(--cd, var(--c));
+}
+
+/* 히트맵: 파랑 한 가지 색, 연함→진함 (dataviz sequential ramp). 다크는 어두운 배경 쪽에서 시작 */
+.heat-1 { background-color: #e6f0fd; }
+.heat-2 { background-color: #b7d3f6; }
+.heat-3 { background-color: #6da7ec; }
+.heat-4 { background-color: #2a78d6; color: #fff; }
+.dark .heat-1 { background-color: #0d2240; }
+.dark .heat-2 { background-color: #0d366b; }
+.dark .heat-3 { background-color: #184f95; }
+.dark .heat-4 { background-color: #2a78d6; color: #fff; }
