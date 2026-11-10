@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { Button, Card } from '../../components/Page'
 import { showToast } from '../../components/Toast'
 import { login, logout, retrySync, signup } from '../../sync'
@@ -21,13 +21,22 @@ export function SyncSection() {
   const [form, setForm] = useState({ email: '', pw: '' })
   const [busy, setBusy] = useState(false)
   const [err, setErr] = useState<string | null>(null)
+  const emailRef = useRef<HTMLInputElement>(null)
+  const pwRef = useRef<HTMLInputElement>(null)
   if (!available) return null
 
-  const run = async (fn: () => Promise<void>) => {
+  // 아이폰 자동완성은 상태를 안 바꿀 때가 있어서 누르는 순간 입력칸 값을 직접 읽는다
+  const run = async (fn: (email: string, pw: string) => Promise<void>) => {
+    const email = (emailRef.current?.value ?? form.email).trim()
+    const pw = pwRef.current?.value ?? form.pw
+    if (!email || !pw) {
+      setErr('이메일과 비밀번호를 입력하세요.')
+      return
+    }
     setBusy(true)
     setErr(null)
     try {
-      await fn()
+      await fn(email, pw)
       setForm({ email: '', pw: '' })
     } catch (e) {
       setErr(e instanceof Error ? e.message : String(e))
@@ -86,7 +95,7 @@ export function SyncSection() {
         className="space-y-2"
         onSubmit={(e) => {
           e.preventDefault()
-          void run(() => login(form.email, form.pw))
+          void run(login)
         }}
       >
         <input
@@ -94,6 +103,7 @@ export function SyncSection() {
           type="email"
           autoComplete="email"
           placeholder="이메일"
+          ref={emailRef}
           value={form.email}
           onChange={(e) => setForm({ ...form, email: e.target.value })}
         />
@@ -102,18 +112,19 @@ export function SyncSection() {
           type="password"
           autoComplete="current-password"
           placeholder="비밀번호 (6자 이상)"
+          ref={pwRef}
           value={form.pw}
           onChange={(e) => setForm({ ...form, pw: e.target.value })}
         />
         {err && <p className="text-xs text-red-600 dark:text-red-400">{err}</p>}
         <div className="flex gap-2">
-          <Button type="submit" variant="primary" disabled={busy || !form.email || !form.pw}>
+          <Button type="submit" variant="primary" disabled={busy}>
             로그인
           </Button>
           <Button
             type="button"
-            disabled={busy || !form.email || !form.pw}
-            onClick={() => void run(() => signup(form.email, form.pw))}
+            disabled={busy}
+            onClick={() => void run(signup)}
           >
             처음이면 가입
           </Button>
