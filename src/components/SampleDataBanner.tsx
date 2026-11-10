@@ -1,11 +1,13 @@
 import { useStore } from '../store/useStore'
+import { useSync } from '../sync/syncState'
 import { Button, Card } from './Page'
 
 /** 데이터가 비어 있을 때 보여주는 안내 + 샘플 데이터 넣기 */
 export function SampleDataBanner() {
   const empty = useStore((s) => s.expenses.length === 0 && s.trips.length === 0)
   const loadSample = useStore((s) => s.loadSample)
-  if (!empty) return null
+  const synced = useSync((s) => s.available && (!s.ready || !!s.email))
+  if (!empty || synced) return null
   return (
     <Card className="mb-4 border-dashed text-center">
       <p className="text-sm text-neutral-600 dark:text-neutral-400">아직 기록이 없어요.</p>

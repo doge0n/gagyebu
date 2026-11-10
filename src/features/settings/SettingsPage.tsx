@@ -8,6 +8,8 @@ import { BudgetSheet } from '../calendar/BudgetBar'
 import { BackupSection } from './BackupSection'
 import { CategoryManager } from './CategoryManager'
 import { QuickItemManager } from './QuickItemManager'
+import { SyncSection } from './SyncSection'
+import { useSync } from '../../sync/syncState'
 
 export function SettingsPage() {
   const settings = useStore((s) => s.settings)
@@ -16,6 +18,7 @@ export function SettingsPage() {
   const resetAll = useStore((s) => s.resetAll)
   const counts = { e: useStore((s) => s.expenses.length), t: useStore((s) => s.trips.length) }
   const [budgetOpen, setBudgetOpen] = useState(false)
+  const synced = useSync((s) => !!s.email)
 
   const themes: { v: ThemeMode; label: string }[] = [
     { v: 'system', label: '시스템' },
@@ -26,6 +29,8 @@ export function SettingsPage() {
   return (
     <Page title="설정">
       <div className="space-y-3">
+        <SyncSection />
+
         <Card className="py-2">
           <h2 className="pt-2 text-sm font-semibold">입력</h2>
           <Toggle
@@ -79,19 +84,21 @@ export function SettingsPage() {
             지금 저장된 기록: 지출 {counts.e}건 · 여행 {counts.t}개
           </p>
           <div className="flex flex-wrap gap-2">
-            <Button
-              onClick={() => {
-                if (confirm('지금 데이터를 지우고 샘플 데이터로 바꿀까요?\n(필요하면 먼저 내보내기로 백업하세요)')) loadSample()
-              }}
-            >
-              샘플 데이터 넣기
-            </Button>
+            {!synced && (
+              <Button
+                onClick={() => {
+                  if (confirm('지금 데이터를 지우고 샘플 데이터로 바꿀까요?\n(필요하면 먼저 내보내기로 백업하세요)')) loadSample()
+                }}
+              >
+                샘플 데이터 넣기
+              </Button>
+            )}
             <Button
               variant="danger"
               onClick={() => {
                 if (
                   confirm(
-                    `지출 ${counts.e}건 · 여행 ${counts.t}개와 카테고리 설정을 모두 지웁니다.\n되돌릴 수 없어요. 먼저 내보내기로 백업했나요?\n\n계속할까요?`,
+                    `지출 ${counts.e}건 · 여행 ${counts.t}개와 카테고리 설정을 모두 지웁니다.\n${synced ? '로그인한 모든 기기에서 지워져요. ' : ''}되돌릴 수 없어요. 먼저 내보내기로 백업했나요?\n\n계속할까요?`,
                   )
                 )
                   resetAll()
